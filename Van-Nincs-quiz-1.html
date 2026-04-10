@@ -1,0 +1,236 @@
+
+<meta charset="UTF-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.shell{background:#FFF8F0;min-height:100vh;padding:0 0 48px;font-family:'Segoe UI',Arial,sans-serif}
+.topbar{background:#FF6B6B;padding:10px 24px;text-align:center}
+.topbar-title{font-size:15px;font-weight:700;color:#2C0A0A;letter-spacing:1px;text-transform:uppercase}
+.hero{background:linear-gradient(135deg,#FF9F43,#F7DC6F,#48C774,#209CEE,#A855F7);padding:28px 24px 22px;text-align:center}
+.hero-title{font-size:26px;font-weight:700;color:#2C1A00;line-height:1.2;margin-bottom:4px}
+.hero-sub{font-size:14px;color:#3A1A00;margin-bottom:18px;font-weight:600}
+.prog-row{display:flex;align-items:center;gap:10px;justify-content:center}
+.prog-track{flex:1;max-width:240px;height:6px;background:rgba(255,255,255,0.45);border-radius:99px;overflow:hidden}
+.prog-fill{height:100%;background:#2C1A00;border-radius:99px;transition:width .4s ease}
+.prog-lbl{font-size:12px;color:#2C1A00;min-width:36px;text-align:right;font-weight:700}
+.score-pill{background:#2C1A00;border-radius:20px;padding:5px 14px;font-size:13px;color:#FFE5B4;font-weight:700}
+.stage{padding:20px 16px 0;max-width:540px;margin:0 auto}
+.q-card{background:#FFFFFF;border-radius:18px;border:2.5px solid #FF9F43;padding:22px 20px 16px;margin-bottom:14px}
+.q-num{font-size:11px;letter-spacing:2px;color:#E67E22;text-transform:uppercase;margin-bottom:10px;display:block;font-weight:700}
+.q-text{font-size:20px;color:#2C1A00;font-weight:500;line-height:1.5}
+.blank{display:inline-block;min-width:110px;border-bottom:2.5px solid #FF9F43;text-align:center;color:#E67E22;font-weight:700;padding:0 6px}
+.opts{display:flex;flex-direction:column;gap:9px;margin-bottom:10px}
+.opt{background:#FFFFFF;border:2px solid #E8D5C0;border-radius:13px;padding:14px 18px;font-size:16px;color:#2C1A00;cursor:pointer;text-align:left;font-family:'Segoe UI',Arial,sans-serif;transition:all .15s;display:flex;align-items:center;gap:12px}
+.opt:nth-child(1){border-color:#FFBDBD}
+.opt:nth-child(2){border-color:#B3D9FF}
+.opt:nth-child(3){border-color:#B3F0C8}
+.opt-letter{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.opt:nth-child(1) .opt-letter{background:#FFE5E5;color:#C0392B}
+.opt:nth-child(2) .opt-letter{background:#E5F2FF;color:#2471A3}
+.opt:nth-child(3) .opt-letter{background:#E5F9EE;color:#1E8449}
+.opt:hover:not(:disabled){transform:translateX(5px)}
+.opt:nth-child(1):hover:not(:disabled){background:#FFF5F5;border-color:#FF6B6B}
+.opt:nth-child(2):hover:not(:disabled){background:#F0F8FF;border-color:#209CEE}
+.opt:nth-child(3):hover:not(:disabled){background:#F0FFF6;border-color:#48C774}
+.opt.correct{background:#E8FFF2;border-color:#1E8449;color:#1A4A2E}
+.opt.correct .opt-letter{background:#27AE60;color:#FFFFFF}
+.opt.wrong{background:#FFF0F0;border-color:#C0392B;color:#7B1A1A}
+.opt.wrong .opt-letter{background:#E74C3C;color:#FFFFFF}
+.opt.reveal{background:#E8FFF2;border-color:#1E8449;color:#1A4A2E}
+.opt.reveal .opt-letter{background:#27AE60;color:#FFFFFF}
+.opt:disabled{cursor:default;transform:none}
+.fb{border-radius:13px;padding:13px 16px;font-size:14px;line-height:1.6;display:none;margin-top:4px}
+.fb.ok{display:block;background:#E8FFF2;border:1.5px solid #27AE60;color:#1A4A2E}
+.fb.no{display:block;background:#FFF0F0;border:1.5px solid #C0392B;color:#7B1A1A}
+.fb-hu{color:#5D3A1A;font-size:13px;margin-top:5px;display:block;font-weight:600}
+.next-btn{width:100%;padding:15px;border:none;border-radius:13px;font-size:16px;font-weight:700;cursor:pointer;font-family:'Segoe UI',Arial,sans-serif;display:none;margin-top:10px;background:linear-gradient(90deg,#FF6B6B,#FF9F43,#F7DC6F,#48C774,#209CEE,#A855F7);color:#2C1A00}
+.next-btn:hover{opacity:0.88}
+.dots{display:flex;justify-content:center;gap:6px;margin-top:18px}
+.dot{width:10px;height:10px;border-radius:50%;opacity:0.3}
+.dot.active{opacity:1}
+.result{display:none;text-align:center;padding:36px 16px}
+.r-icon{font-size:56px;margin-bottom:16px;display:block}
+.r-big{font-size:68px;font-weight:700;line-height:1}
+.r-den{font-size:26px;color:#5D3A1A}
+.r-title{font-size:20px;color:#2C1A00;margin:12px 0 8px;font-weight:700}
+.r-msg{font-size:15px;color:#5D3A1A;margin-bottom:28px;line-height:1.6;max-width:360px;margin-left:auto;margin-right:auto;background:#FFFFFF;border-radius:13px;padding:16px;border:2px solid #FF9F43}
+.r-btn{border:none;border-radius:13px;padding:14px 36px;font-size:16px;font-weight:700;color:#2C1A00;cursor:pointer;font-family:'Segoe UI',Arial,sans-serif;background:linear-gradient(90deg,#FF6B6B,#FF9F43,#F7DC6F,#48C774,#209CEE,#A855F7)}
+.r-btn:hover{opacity:0.88}
+</style>
+
+<div class="shell">
+  <div class="topbar">
+    <div class="topbar-title">&#9749; Gyakorlatias Angol</div>
+  </div>
+  <div class="hero">
+    <div class="hero-title">Van / Nincs &#8212; There is / Have</div>
+    <div class="hero-sub">V&aacute;laszd ki a helyes angol kifejez&eacute;st!</div>
+    <div class="prog-row">
+      <div class="score-pill" id="spill">0 / 0</div>
+      <div class="prog-track"><div class="prog-fill" id="pfill" style="width:0%"></div></div>
+      <div class="prog-lbl" id="plbl">1 / 5</div>
+    </div>
+  </div>
+
+  <div class="stage" id="stage">
+    <div class="q-card">
+      <span class="q-num" id="qnum"></span>
+      <div class="q-text" id="qtext"></div>
+    </div>
+    <div class="opts" id="opts"></div>
+    <div class="fb" id="fb"></div>
+    <button class="next-btn" id="nbtn"></button>
+    <div class="dots" id="dots"></div>
+  </div>
+
+  <div class="result" id="result">
+    <span class="r-icon" id="ricon">&#127919;</span>
+    <div><span class="r-big" id="rnum">0</span><span class="r-den"> / 5</span></div>
+    <div class="r-title" id="rtitle"></div>
+    <div class="r-msg" id="rmsg"></div>
+    <button class="r-btn" onclick="restart()">&#218;jra pr&oacute;b&aacute;lom &#128260;</button>
+  </div>
+</div>
+
+<script>
+const DOT_COLORS=['#FF6B6B','#FF9F43','#F7DC6F','#48C774','#209CEE'];
+const Qs=[
+  {
+    before:"___ a book on the table.",
+    opts:["It has","There is","It is"],
+    correct:1,
+    hu:"Van egy k\u00f6nyv az asztalon.",
+    ok:"\u2713 \"There is\" \u2014 ezt haszn\u00e1ljuk, ha valami VAN valahol.",
+    no:"\u2717 \"There is\" a helyes! Dolgok megl\u00e9t\u00e9t ezzel fejezz\u00fck ki."
+  },
+  {
+    before:"I ___ two brothers.",
+    opts:["have","has","am"],
+    correct:0,
+    hu:"K\u00e9t fiv\u00e9rem van.",
+    ok:"\u2713 \"have\" \u2014 I / you / we / they eset\u00e9n mindig \"have\".",
+    no:"\u2717 \"have\" a helyes! Az \"I\" alannyal mindig \"have\"-t haszn\u00e1lunk."
+  },
+  {
+    before:"___ a problem.",
+    opts:["There is","It has","He is"],
+    correct:0,
+    hu:"Van egy probl\u00e9ma.",
+    ok:"\u2713 \"There is\" \u2014 ha valami VAN vagy L\u00c9TEZIK, \"There is/are\"-t haszn\u00e1lunk.",
+    no:"\u2717 \"There is\" a helyes! L\u00e9tez\u00e9s kifejez\u00e9s\u00e9re \"There is/are\" kell."
+  },
+  {
+    before:"She ___ a car.",
+    opts:["have","has","is"],
+    correct:1,
+    hu:"Van egy aut\u00f3ja.",
+    ok:"\u2713 \"has\" \u2014 she / he / it eset\u00e9n mindig \"has\".",
+    no:"\u2717 \"has\" a helyes! She/he/it alannyal \"has\"-t haszn\u00e1lunk, nem \"have\"-t."
+  },
+  {
+    before:"___ many people here.",
+    opts:["There is","There are","It is"],
+    correct:1,
+    hu:"Sok ember van itt.",
+    ok:"\u2713 \"There are\" \u2014 t\u00f6bbes sz\u00e1m! People = sok ember \u2192 \"are\".",
+    no:"\u2717 \"There are\" a helyes! T\u00f6bbes sz\u00e1mhoz \"There ARE\" kell."
+  }
+];
+
+let cur=0,score=0,answered=false,shuffled=[];
+const ltrs=['a','b','c'];
+
+function renderDots(){
+  const c=document.getElementById('dots');
+  c.innerHTML='';
+  Qs.forEach((_,i)=>{
+    const d=document.createElement('div');
+    d.className='dot'+(i===cur?' active':'');
+    d.style.background=DOT_COLORS[i];
+    c.appendChild(d);
+  });
+}
+
+function render(){
+  const q=Qs[cur];
+  document.getElementById('qnum').textContent='K\u00e9rd\u00e9s '+(cur+1)+' / '+Qs.length;
+  document.getElementById('pfill').style.width=(cur/Qs.length*100)+'%';
+  document.getElementById('plbl').textContent=(cur+1)+' / '+Qs.length;
+  document.querySelector('.q-card').style.borderColor=DOT_COLORS[cur];
+
+  const correctText=q.opts[q.correct];
+  shuffled=[...q.opts].sort(()=>Math.random()-.5);
+  const ci=shuffled.indexOf(correctText);
+
+  document.getElementById('qtext').innerHTML=q.before.replace('___','<span class="blank">___</span>');
+
+  const container=document.getElementById('opts');
+  container.innerHTML='';
+  shuffled.forEach((o,i)=>{
+    const btn=document.createElement('button');
+    btn.className='opt';
+    btn.innerHTML='<span class="opt-letter">'+ltrs[i]+'</span><span>'+o+'</span>';
+    btn.onclick=(function(idx,correctIdx,question){return function(){pick(idx,correctIdx,question);};})(i,ci,q);
+    container.appendChild(btn);
+  });
+
+  document.getElementById('fb').className='fb';
+  document.getElementById('fb').innerHTML='';
+  document.getElementById('nbtn').style.display='none';
+  answered=false;
+  renderDots();
+}
+
+function pick(idx,ci,q){
+  if(answered)return;
+  answered=true;
+  const btns=document.querySelectorAll('.opt');
+  btns.forEach(function(b){b.disabled=true;});
+  const ok=(idx===ci);
+  if(ok){score++;btns[idx].classList.add('correct');}
+  else{btns[idx].classList.add('wrong');btns[ci].classList.add('reveal');}
+  document.getElementById('spill').textContent=score+' / '+(cur+1);
+  const fb=document.getElementById('fb');
+  fb.innerHTML=(ok?q.ok:q.no)+'<span class="fb-hu">\ud83c\udded\ud83c\uddfa '+q.hu+'</span>';
+  fb.className='fb '+(ok?'ok':'no');
+  const nb=document.getElementById('nbtn');
+  nb.style.display='block';
+  nb.textContent=cur<Qs.length-1?'K\u00f6vetkez\u0151 k\u00e9rd\u00e9s \u2192':'Eredm\u00e9ny \u2192';
+}
+
+document.getElementById('nbtn').onclick=function(){
+  cur++;
+  if(cur>=Qs.length)showResult();
+  else render();
+};
+
+function showResult(){
+  document.getElementById('stage').style.display='none';
+  document.getElementById('result').style.display='block';
+  document.getElementById('pfill').style.width='100%';
+  document.getElementById('rnum').textContent=score;
+  const icons=['\ud83d\ude05','\ud83e\udd14','\ud83d\udc4d','\ud83c\udf1f','\ud83c\udfc6'];
+  const titles=['M\u00e9g egy k\u00f6r!','Fejl\u0151d\u00e9s!','Sz\u00e9p munka!','Majdnem t\u00f6k\u00e9letes!','T\u00f6k\u00e9letes!'];
+  const msgs=[
+    'Olvasd \u00e1t a magyar\u00e1zatokat \u00e9s pr\u00f3b\u00e1ld \u00fajra!',
+    'Szinte! THERE IS/ARE = l\u00e9tez\u00e9s, HAVE/HAS = birtokl\u00e1s.',
+    'J\u00f3! Figyelj a have vs has k\u00fcl\u00f6nbs\u00e9gre.',
+    'Csak egy hiba! Nagyon k\u00f6zel volt\u00e1l.',
+    'Gratulálok! T\u00f6k\u00e9letesen \u00e9rted. K\u00e9sz! \u2713'
+  ];
+  const s=Math.min(score,4);
+  document.getElementById('ricon').textContent=icons[s];
+  document.getElementById('rtitle').textContent=titles[s];
+  document.getElementById('rmsg').textContent=msgs[s];
+  document.getElementById('rnum').style.color=DOT_COLORS[s];
+}
+
+function restart(){
+  cur=0;score=0;
+  document.getElementById('stage').style.display='block';
+  document.getElementById('result').style.display='none';
+  document.getElementById('spill').textContent='0 / 0';
+  render();
+}
+
+render();
+</script>
